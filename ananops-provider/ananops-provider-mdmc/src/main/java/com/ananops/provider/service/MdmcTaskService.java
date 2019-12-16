@@ -1,5 +1,6 @@
 package com.ananops.provider.service;
 
+import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
 
 import java.util.List;
@@ -55,6 +56,10 @@ public interface MdmcTaskService {
 //
 //    Long dispatchTask(Long taskId);
 
+    String faciTransfer(Long taskId,List<Long> all);
+
+    void timeLimit(final Long id, final int delay,List<Long> all);
+
     List<MdmcStatusRepairsDto> getRepairsStatusCountList(Long maintainer_id);
 
     List<MdmcOrderDto> getTaskList(Long user_id);
@@ -80,6 +85,9 @@ public interface MdmcTaskService {
     String deleteTask(Long task_id);
 
     String updateTask(MdmcUpdateTaskDto updateTaskDto);
+
+    //从对应关系中删除该工单
+    void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto);
 
     String submitApproval(MdmcApproveInfoDto approveInfoDto);
 }

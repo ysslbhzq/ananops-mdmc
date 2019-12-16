@@ -247,8 +247,8 @@ public class DMCHanddler  {
         }
         return WrapMapper.ok(processingDtoList);
     }
-    @PostMapping(value = "/deleteTask")
-    @ApiOperation(httpMethod = "POST",value = "撤销工单")
+    @DeleteMapping(value = "/deleteTask")
+    @ApiOperation(httpMethod = "DELETE",value = "撤销工单")
     public Wrapper<String> deleteTask(@ApiParam(name = "task_id",value = "工单id") @RequestParam Long task_id){
         try {
             String a=taskService.deleteTask(task_id);

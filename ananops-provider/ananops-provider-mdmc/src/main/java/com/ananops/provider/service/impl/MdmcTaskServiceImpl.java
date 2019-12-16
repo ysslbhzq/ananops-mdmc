@@ -13,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -39,6 +36,7 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 
     static private Map<Long, MdmcTask> taskMap = new ConcurrentHashMap<>();
 
+    static private Map<Long,List<Long>> faciMap=new ConcurrentHashMap<>();
 //    @Override
 //    public MdmcTask changeTaskStatus(Long taskId, Integer status) {
 //        MdmcTask taskCache;
@@ -102,6 +100,29 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        return taskCache;
 //    }
 //
+
+    @Override
+    public void timeLimit(final Long id, final int delay,List<Long> all){
+        final Timer timer=new Timer();
+        timer.schedule(new TimerTask(){
+            int count=0;
+            @Override
+            public void run(){
+                count++;
+                MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(id);
+                int status=mdmcTask.getStatus();
+                if(status==1&&count==delay/1000){                         //未接单状态
+                    faciTransfer(id,all);                                             //调用转单方法
+                    timer.cancel();
+                }
+                if(status==2){                                            //已接单
+                    timer.cancel();
+                }
+            }
+        },0,1000);
+    }
+
+
     @Override
     public String submitTask(MdmcOrderDto orderDto) throws Exception{
 
@@ -133,9 +154,12 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
         task.setProjectId(orderDto.getProjectId());
         task.setTitle(orderDto.getTitle());
 
-
         int a=taskMapper.insert(task);
         if (a<1){return "出错";}
+
+        List<Long> list=new ArrayList<>();
+        list.add(orderDto.getFacilitatorId());
+        faciMap.put(task_id,list);
 
         List<MdmcTaskItemDto> taskItemDtoList=orderDto.getTaskItems();
         for (int i=0;i<taskItemDtoList.size();i++){
@@ -1009,6 +1033,37 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
         if (i<1){return "出错";}
         return "success";
 
+    }
+
+    @Override
+    public String faciTransfer(Long taskId,List<Long> all){
+        int count=0;
+        Long faci=null;
+      List<Long> list=faciMap.get(taskId);                           //获取当前任务id已分配过的服务商
+      for(Long faciId:all){
+          count++;
+          if (!list.contains(faciId)) {                               //判断当前服务商是否已被分配过
+              faci=faciId;
+              list.add(faciId);
+              faciMap.put(taskId,list);
+              break;
+          }
+          if(count==list.size()){
+             return "无服务商接单";                         //无服务商接单
+          }
+      }
+      MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(taskId);
+      mdmcTask.setFacilitatorId(faci);
+      if (taskMapper.updateByPrimaryKey(mdmcTask)==1){
+          return "success";
+      }
+          return  "failed";
+    }
+
+    @Override
+   public void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto){
+        Long taskId=updateTaskDto.getOrderId();
+         faciMap.remove(taskId);
     }
 
     @Override

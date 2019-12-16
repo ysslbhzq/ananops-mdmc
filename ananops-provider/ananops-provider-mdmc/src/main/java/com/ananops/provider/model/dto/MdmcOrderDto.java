@@ -38,6 +38,7 @@ public class MdmcOrderDto implements Serializable {
     @ApiModelProperty("报修人ID")
     private Long userId;
 
+
 //    @ApiModelProperty("设备地址-经度")
 //    private BigDecimal latitude;
 //
