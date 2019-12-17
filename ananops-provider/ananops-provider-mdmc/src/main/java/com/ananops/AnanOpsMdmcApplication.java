@@ -21,9 +21,9 @@ import javax.sql.DataSource;
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableTransactionManagement
-public class AnanOpsMdmApplication {
+public class AnanOpsMdmcApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AnanOpsMdmApplication.class,args);
+        SpringApplication.run(AnanOpsMdmcApplication.class,args);
     }
 
     @Bean

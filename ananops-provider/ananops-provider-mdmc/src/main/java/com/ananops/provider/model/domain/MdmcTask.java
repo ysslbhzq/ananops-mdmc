@@ -11,7 +11,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name = "task")
+@Table(name = "mdmc_task")
 public class MdmcTask extends BaseEntity {
     /**
      * 发起此次维修请求的用户ID
