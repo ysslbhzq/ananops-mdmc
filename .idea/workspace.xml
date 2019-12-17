@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1285e21b-b6a8-405e-a218-33b2d6489808" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/ananops-mdmc.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/39b70382-a311-497c-89b9-7eb83a5e537c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/39b70382-a311-497c-89b9-7eb83a5e537c.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/ananops-common-base.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-config/ananops-common-config.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/ananops-common-core.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-util/ananops-common-util.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-zk/ananops-common-zk.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-app/ananops-security-app.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-core/ananops-security-core.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-feign/ananops-security-feign.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-discovery/ananops-discovery.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-gateway/ananops-gateway.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-monitor/ananops-monitor.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-mdc-api/ananops-provider-mdc-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-omc-api/ananops-provider-omc-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-opc-api/ananops-provider-opc-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-sdk-api/ananops-provider-sdk-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-tpc-api/ananops-provider-tpc-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-uac-api/ananops-provider-uac-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/ananops-provider-imc.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/ananops-provider-opc.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/ananops-provider-tpc.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/ananops-provider-uac.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-zipkin/ananops-zipkin.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter-parent.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter/elastic-job-lite-starter.iml" beforeDir="false" />
-    </list>
+    <list default="true" id="1285e21b-b6a8-405e-a218-33b2d6489808" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -175,5 +142,13 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="194" y="3" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1576589570818" />
+    <state x="147" y="65" key="DiffContextDialog" timestamp="1576597897184">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="147" y="65" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1576597897184" />
+    <state x="459" y="203" key="git4idea.merge.GitPullDialog" timestamp="1576597883131">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="459" y="203" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1576597883131" />
   </component>
 </project>
