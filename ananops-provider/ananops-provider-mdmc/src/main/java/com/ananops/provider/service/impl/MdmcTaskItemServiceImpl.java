@@ -4,7 +4,6 @@ import com.ananops.provider.mapper.MdmcTaskItemLogMapper;
 import com.ananops.provider.mapper.MdmcTaskItemMapper;
 import com.ananops.provider.mapper.MdmcTaskMapper;
 import com.ananops.provider.model.domain.MdmcTaskItem;
-import com.ananops.provider.model.dto.MdmcDeviceTroubleDto;
 import com.ananops.provider.model.dto.MdmcStatusRepairsDto;
 import com.ananops.provider.model.dto.MdmcTroubleInfoDto;
 import com.ananops.provider.model.dto.MdmcWorkLoadDto;
@@ -202,25 +201,13 @@ public class MdmcTaskItemServiceImpl implements MdmcTaskItemService {
     }
 
     @Override
-    public List<MdmcDeviceTroubleDto> getDeviceTroubleList(Long task_id) {
-       List<MdmcDeviceTroubleDto> deviceTroubleDtoList=new ArrayList<>();
+    public List<MdmcTaskItem> getDeviceTroubleList(Long task_id) {
+
        MdmcTaskItem taskItem=new MdmcTaskItem();
        taskItem.setTaskId(task_id);
        List<MdmcTaskItem> taskItemList=mdmcTaskItemMapper.select(taskItem);
-       for (int i=0;i<taskItemList.size();i++){
-           MdmcDeviceTroubleDto deviceTroubleDto=new MdmcDeviceTroubleDto();
-           deviceTroubleDto.setDeviceName(taskItemList.get(i).getDeviceName());
-           deviceTroubleDto.setOrderId(task_id);
-           deviceTroubleDto.setLevel(taskItemList.get(i).getLevel());
-           deviceTroubleDto.setDescription(taskItemList.get(i).getDescription());
-           deviceTroubleDto.setCreator(taskItemList.get(i).getCreator());
-           deviceTroubleDto.setDeviceNo(taskItemList.get(i).getDeviceId());
-           deviceTroubleDto.setDeviceLatitude(taskItemList.get(i).getDeviceLatitude());
-           deviceTroubleDto.setDeviceLongtitude(taskItemList.get(i).getDeviceLongitude());
 
-           deviceTroubleDtoList.add(deviceTroubleDto);
-       }
-       return  deviceTroubleDtoList;
+       return  taskItemList;
     }
 
 

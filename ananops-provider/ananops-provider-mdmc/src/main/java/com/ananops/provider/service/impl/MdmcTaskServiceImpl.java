@@ -1,19 +1,18 @@
 package com.ananops.provider.service.impl;
 
-import com.ananops.provider.mapper.MdmcTaskItemLogMapper;
-import com.ananops.provider.mapper.MdmcTaskItemMapper;
-import com.ananops.provider.mapper.MdmcTaskLogMapper;
-import com.ananops.provider.mapper.MdmcTaskMapper;
-import com.ananops.provider.model.domain.MdmcTask;
-import com.ananops.provider.model.domain.MdmcTaskItem;
-import com.ananops.provider.model.domain.MdmcTaskLog;
+import com.ananops.provider.mapper.*;
+import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.MdmcTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,9 +33,14 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     @Resource
     private MdmcTaskItemLogMapper itemLogMapper;
 
+    @Resource
+    private MdmcDeviceMapper deviceMapper;
+
+    @Resource
+    private MdmcReviewMapper reviewMapper;
+
     static private Map<Long, MdmcTask> taskMap = new ConcurrentHashMap<>();
 
-    static private Map<Long,List<Long>> faciMap=new ConcurrentHashMap<>();
 //    @Override
 //    public MdmcTask changeTaskStatus(Long taskId, Integer status) {
 //        MdmcTask taskCache;
@@ -100,31 +104,8 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        return taskCache;
 //    }
 //
-
     @Override
-    public void timeLimit(final Long id, final int delay,List<Long> all){
-        final Timer timer=new Timer();
-        timer.schedule(new TimerTask(){
-            int count=0;
-            @Override
-            public void run(){
-                count++;
-                MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(id);
-                int status=mdmcTask.getStatus();
-                if(status==1&&count==delay/1000){                         //未接单状态
-                    faciTransfer(id,all);                                             //调用转单方法
-                    timer.cancel();
-                }
-                if(status==2){                                            //已接单
-                    timer.cancel();
-                }
-            }
-        },0,1000);
-    }
-
-
-    @Override
-    public String submitTask(MdmcOrderDto orderDto) throws Exception{
+    public String submitTask(MdmcOrderDto orderDto){
 
 //        // 获取报修用户信息
 //        @NotNull
@@ -143,9 +124,8 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        task.setCreator(user.getName());
 //        task.setLastOperatorId(user.getUId());
 //        task.setLastOperator(user.getName());
-        Random rand = new Random();
-        Long task_id=rand.nextLong();
-        task.setId(task_id);
+
+        task.setId(getTypeList().getTask_id());
         task.setUser_id(orderDto.getUserId());
         task.setTotalCost(orderDto.getTotalCost());
         task.setFacilitatorId(orderDto.getFacilitatorId());
@@ -153,30 +133,44 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
         task.setClearingForm(orderDto.getPayMode());
         task.setProjectId(orderDto.getProjectId());
         task.setTitle(orderDto.getTitle());
+        task.setCreator_call(orderDto.getCreator_call());
+        task.setContract_id(orderDto.getContractId());
+        task.setCreator(orderDto.getCreator());
+        task.setAddress_name(orderDto.getAddressName());
+        task.setLevel(orderDto.getLevel());
+        task.setAppoint_time(orderDto.getAppoint_time());
+        task.setStatus(3);
 
-        int a=taskMapper.insert(task);
-        if (a<1){return "出错";}
+        int a = taskMapper.insert(task);
+        if (a < 1) {
+            return "出错";
+        }
 
-        List<Long> list=new ArrayList<>();
-        list.add(orderDto.getFacilitatorId());
-        faciMap.put(task_id,list);
+        List<MdmcTaskItemDto> taskItemDtoList = orderDto.getTaskItemDtoList();
 
-        List<MdmcTaskItemDto> taskItemDtoList=orderDto.getTaskItems();
-        for (int i=0;i<taskItemDtoList.size();i++){
-            MdmcTaskItem taskItem=new MdmcTaskItem();
+        for (int i = 0; i < taskItemDtoList.size(); i++) {
+            MdmcTaskItem taskItem = new MdmcTaskItem();
+
             Random rand1 = new Random();
-            Long task__item_id=rand1.nextLong();
+            Long task__item_id = rand1.nextLong();
             taskItem.setId(task__item_id);
             taskItem.setDescription(taskItemDtoList.get(i).getDescription());
             taskItem.setDeviceId(taskItemDtoList.get(i).getDeviceId());
             taskItem.setDeviceLatitude(taskItemDtoList.get(i).getDeviceLatitude());
             taskItem.setDeviceLongitude(taskItemDtoList.get(i).getDeviceLongitude());
             taskItem.setDeviceName(taskItemDtoList.get(i).getDeviceName());
-            int b=itemMapper.insert(taskItem);
-           if (b<1){return "出错";}
-        }
-        return "success";
+            taskItem.setPhoto_url(taskItemDtoList.get(i).getPhoto_url());
+            taskItem.setTrouble_type(taskItemDtoList.get(i).getTrouble_type());
 
+            int b = itemMapper.insert(taskItem);
+            if (b < 1) {
+                return "出错";
+            }
+        }
+//        }
+
+            return "success";
+        }
 //        // 任务名称
 //        String title = task.getTitle();
 //        task.setTitle(title);
@@ -189,18 +183,18 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        // 服务商id
 //        Long facilitatorId = order.getFacilitatorId();
 //        task.setFacilitatorId(facilitatorId);
-        // 自动生成报修时间 todo 设置数据库可以自动插入新建时间
+            // 自动生成报修时间 todo 设置数据库可以自动插入新建时间
 //        Calendar cal = Calendar.getInstance();
 //        cal.setTime(new Date());
 //        task.setCreatedTime(cal.getTime());
-        //cal.add(Calendar.DAY_OF_WEEK, 1); //增加一周
-        //Timestamp ddl = new Timestamp(cal.getTime().getTime()); // 计划完成时间
-        // 设备地点
+            //cal.add(Calendar.DAY_OF_WEEK, 1); //增加一周
+            //Timestamp ddl = new Timestamp(cal.getTime().getTime()); // 计划完成时间
+            // 设备地点
 //        BigDecimal requestLatitude = order.getLatitude();
 //        BigDecimal requestLongitude = order.getLongitude();
 //        task.setRequestLatitude(requestLatitude);
 //        task.setRequestLongitude(requestLongitude);
-        // 当前状态
+            // 当前状态
 //        task.setStatus(MdmcTaskStatusEnum.ShenQing.getType());
 //        // 总花费
 //        BigDecimal totalCost = order.getTotalCost();
@@ -225,7 +219,7 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        log.info("创建维修任务成功{}", task.getId());
 
 
-        // 新建维修任务子项
+            // 新建维修任务子项
 //        log.info("在维修任务{}下添加任务子项", task.getId());
 //        List<MdmcTaskItemDto> tasks = order.getTaskItems();
 //        for (MdmcTaskItemDto itemDto: tasks) {
@@ -268,7 +262,7 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 ////        new ToLeaderMsg<Order>().send(uId, leaderId, order);
 //
 //        return "success";
-    }
+
 
 //    @Override
 //    public String leaderApprovePass(MdmcApproveInfoDto approveInfo) throws Exception {
@@ -861,19 +855,26 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 ////
 ////        // todo 根据合同设置的维修工名单和故障类型，随机选择一位维修工，后面设计更好的分配策略\
 ////        return keyConstructor.nextGlobalId();
-////    }
+////    }}
 
-    public List<MdmcStatusRepairsDto> getRepairsStatusCountList(Long maintainer_id){
-        List<MdmcStatusRepairsDto> statusRepairsDtoList=new ArrayList<>();
-        for (Integer type=4;type<=6;type++){//type指的是status
-            MdmcStatusRepairsDto statusRepairsDto=new MdmcStatusRepairsDto();
-            List<MdmcTask> taskList=taskMapper.selectByMaintainerIdAndStatus(maintainer_id,type);
-            statusRepairsDto.setCount(taskList.size());
-            statusRepairsDtoList.add(statusRepairsDto);
-        }
+//    public List<MdmcStatusRepairsDto> getRepairsStatusCount(){
+//        List<MdmcStatusRepairsDto> statusRepairsDtoList=new ArrayList<>();
+//        for (int i=0;i<13;i++){
+//
+//            List<MdmcTask>taskList=taskMapper.selectAll();
+//            for (int a=0;a<taskList.size();a++){
+//                int b=0;
+//                if (taskList.get(a).getStatus()==null){
+//                    taskList.get(a).setStatus(0);
+//                }
+//                if (taskList.get(a).getStatus().equals(i)){
+//                   b++;
+//                }statusRepairsDtoList.get(i).setCount(b);
+//            }
+//        }
 
-        return statusRepairsDtoList;
-    }
+//        return statusRepairsDtoList;
+//    }
 
     @Override
     public List<MdmcOrderDto> getTaskList(Long user_id) {
@@ -897,6 +898,29 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     }
 
     @Override
+    public List<MdmcTask> getTaskListByClassify(MdmcQueryDto queryDto) {
+
+
+        MdmcTask task=new MdmcTask();
+        task.setUser_id(queryDto.getUser_id());
+        task.setMaintainerId(queryDto.getMaintainer_id());
+        task.setFacilitatorId(queryDto.getFacilitator_id());
+        task.setPrincipalId(queryDto.getPrincipal_id());
+        task.setStatus(queryDto.getStatus());
+        task.setLevel(queryDto.getLevel());
+
+        List<MdmcTask> taskList=taskMapper.select(task);
+        if (taskList.size()==0){
+            List<MdmcTask>taskList1=taskMapper.selectAll();
+
+            return taskList1;}
+
+
+
+        return taskList;
+    }
+
+    @Override
     public List<MdmcProcessingDto> getProcessingList(Long task_id) {
         List<MdmcProcessingDto> processingDtoList=new ArrayList<>();
         MdmcTaskLog taskLog=new MdmcTaskLog();
@@ -915,36 +939,37 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     }
 
     @Override
-    public MdmcProcessInfoDto getProcessInfo(Long task_id) {
+    public MdmcResultDto getProcessInfo(Long task_id) {
 
-        MdmcProcessInfoDto processInfoDto=new MdmcProcessInfoDto();
+        MdmcResultDto resultDto=new MdmcResultDto();
         MdmcTask task=taskMapper.selectByPrimaryKey(task_id);
-        processInfoDto.setEndTime(task.getActualFinishTime());
-        processInfoDto.setStartTime(task.getActualStartTime());
-        processInfoDto.setOrderId(task_id);
-        processInfoDto.setStatus(task.getStatus());
-        processInfoDto.setTitle(task.getTitle());
+        resultDto.setActual_finish_time(task.getActualFinishTime());
+        resultDto.setActual_start_time(task.getActualStartTime());
+        resultDto.setStatus(task.getStatus());
+        resultDto.setMaintainer_id(task.getMaintainerId());
 
-        return processInfoDto;
+        return resultDto;
     }
 
     @Override
-    public List<MdmcRepairsTaskDto> getRepairsList(Long maintainer_id) {
-        List<MdmcRepairsTaskDto> repairsTaskDtoList=new ArrayList<>();
-        MdmcTaskItem taskItem=new MdmcTaskItem();
-        taskItem.setMaintainerId(maintainer_id);
-        List<MdmcTaskItem> taskItemList=itemMapper.select(taskItem);
-        for (int i=0;i<taskItemList.size();i++){
-        MdmcRepairsTaskDto repairsTaskDto=new MdmcRepairsTaskDto();
+    public List<MdmcOrderDto> getRepairsList(Long maintainer_id) {
+        List<MdmcOrderDto> orderDtoList=new ArrayList<>();
         MdmcTask task=new MdmcTask();
-        task=taskMapper.selectByPrimaryKey(taskItemList.get(i).getTaskId());
-        repairsTaskDto.setOrderId(taskItemList.get(i).getTaskId());
-        repairsTaskDto.setCreateTime(task.getCreatedTime());
-        repairsTaskDto.setStatus(task.getStatus());
+        task.setMaintainerId(maintainer_id);
+        List<MdmcTask> taskList=taskMapper.select(task);
+        for (int i=0;i<taskList.size();i++){
+            MdmcOrderDto orderDto=new MdmcOrderDto();
 
-        repairsTaskDtoList.add(repairsTaskDto);
+            orderDto.setFacilitatorId(taskList.get(i).getFacilitatorId());
+            orderDto.setPayMode(taskList.get(i).getClearingForm());
+            orderDto.setPrincipalId(taskList.get(i).getPrincipalId());
+            orderDto.setProjectId(taskList.get(i).getProjectId());
+            orderDto.setTitle(taskList.get(i).getTitle());
+            orderDto.setTotalCost(taskList.get(i).getTotalCost());
+            orderDto.setStatus(taskList.get(i).getStatus());
+            orderDtoList.add(orderDto);
         }
-        return repairsTaskDtoList;
+        return orderDtoList;
     }
 
     @Override
@@ -964,34 +989,46 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     }
 
     @Override
-    public List<MdmcPrincipleTaskDto> getPrincipalTaskList(Long principal_id) {
-        List<MdmcPrincipleTaskDto> principleTaskDtoList=new ArrayList<>();
+    public List<MdmcOrderDto> getPrincipalTaskList(Long principal_id) {
+        List<MdmcOrderDto> orderDtoList=new ArrayList<>();
         MdmcTask task=new MdmcTask();
         task.setFacilitatorId(principal_id);
         List<MdmcTask> taskList=taskMapper.select(task);
         for (int i=0;i<taskList.size();i++){
-            MdmcPrincipleTaskDto principleTaskDto=new MdmcPrincipleTaskDto();
-            principleTaskDto.setFacilitatorId(taskList.get(i).getFacilitatorId());
-            principleTaskDto.setPayMode(taskList.get(i).getClearingForm());
-            principleTaskDto.setPrincipalId(taskList.get(i).getPrincipalId());
-            principleTaskDto.setProjectId(taskList.get(i).getProjectId());
-            principleTaskDto.setTitle(taskList.get(i).getTitle());
-            principleTaskDto.setTotalCost(taskList.get(i).getTotalCost());
-            principleTaskDtoList.add(principleTaskDto);
+            MdmcOrderDto orderDto=new MdmcOrderDto();
+
+            orderDto.setFacilitatorId(taskList.get(i).getFacilitatorId());
+            orderDto.setPayMode(taskList.get(i).getClearingForm());
+            orderDto.setPrincipalId(taskList.get(i).getPrincipalId());
+            orderDto.setProjectId(taskList.get(i).getProjectId());
+            orderDto.setTitle(taskList.get(i).getTitle());
+            orderDto.setTotalCost(taskList.get(i).getTotalCost());
+            orderDto.setStatus(taskList.get(i).getStatus());
+            orderDtoList.add(orderDto);
         }
-        return principleTaskDtoList;
+        return orderDtoList;
     }
 
     @Override
-    public MdmcApproveInfoDto getApprovalInfo(Long task_id) {
-        MdmcApproveInfoDto approveInfoDto=new MdmcApproveInfoDto();
-        approveInfoDto.setTaskId(task_id);
+    public MdmcCheckDto getApprovalInfo(Long task_id) {
+        MdmcCheckDto checkDto=new MdmcCheckDto();
+        checkDto.setOrderId(task_id);
         MdmcTask task=taskMapper.selectByPrimaryKey(task_id);
-        approveInfoDto.setProposer(task.getCreator());
-        approveInfoDto.setProposerId(task.getCreatorId());
-        approveInfoDto.setStatus(task.getStatus());
+        if (task.getStatus()==1){
+            checkDto.setAcceptResult(false);
+            checkDto.setApprovalResult(false);
+        }
+        if (task.getStatus()==6){
+            checkDto.setApprovalResult(true);
+            checkDto.setAcceptResult(true);
+        }
+        if (task.getStatus()==4){
+            checkDto.setAcceptResult(false);
+            checkDto.setApprovalResult(true);
+        }
 
-        return approveInfoDto;
+
+        return checkDto;
     }
 
     @Override
@@ -1036,37 +1073,6 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     }
 
     @Override
-    public String faciTransfer(Long taskId,List<Long> all){
-        int count=0;
-        Long faci=null;
-      List<Long> list=faciMap.get(taskId);                           //获取当前任务id已分配过的服务商
-      for(Long faciId:all){
-          count++;
-          if (!list.contains(faciId)) {                               //判断当前服务商是否已被分配过
-              faci=faciId;
-              list.add(faciId);
-              faciMap.put(taskId,list);
-              break;
-          }
-          if(count==list.size()){
-             return "无服务商接单";                         //无服务商接单
-          }
-      }
-      MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(taskId);
-      mdmcTask.setFacilitatorId(faci);
-      if (taskMapper.updateByPrimaryKey(mdmcTask)==1){
-          return "success";
-      }
-          return  "failed";
-    }
-
-    @Override
-   public void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto){
-        Long taskId=updateTaskDto.getOrderId();
-         faciMap.remove(taskId);
-    }
-
-    @Override
     public String updateTask(MdmcUpdateTaskDto updateTaskDto) {
         MdmcTask task= taskMapper.selectByPrimaryKey(updateTaskDto.getOrderId());
 
@@ -1085,6 +1091,134 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
         List<MdmcTask> taskList=taskMapper.select(task);
         taskList.get(0).setUser_id(approveInfoDto.getProposerId());
         taskList.get(0).setStatus(approveInfoDto.getStatus());
+        return "success";
+    }
+
+    @Override
+    public String submitResult(MdmcResultDto resultDto) {
+        MdmcDevice device=new MdmcDevice();
+
+
+        device.setId(getTypeList().getDevice_id());
+
+        device.setDevice_name(resultDto.getDevice_name());
+        device.setCost(resultDto.getCost());
+        device.setCount(resultDto.getCount());
+        device.setTask_id(resultDto.getTask_id());
+
+        deviceMapper.insert(device);
+
+
+        MdmcTask task=taskMapper.selectByPrimaryKey(resultDto.getTask_id());
+        task.setUser_id(resultDto.getUser_id());
+        task.setTotalCost(resultDto.getTotalcost());
+        task.setActualFinishTime(resultDto.getActual_finish_time());
+        task.setActualStartTime(resultDto.getActual_start_time());
+        task.setStatus(7);
+
+        return "success";
+
+    }
+
+    @Override
+    public String submitReview(MdmcReview review) {
+        MdmcReview review1=new MdmcReview();
+        MdmcTask task=taskMapper.selectByPrimaryKey(review.getTaskId());
+
+       review1.setId(getTypeList().getReview_id());
+       review1.setContents(review.getContents());
+       review1.setScore(review.getScore());
+       reviewMapper.insert(review1);
+       task.setStatus(12);
+       return "success";
+    }
+
+    @Override
+    public List<MdmcResultDto> getResult(Long task_id) {
+        MdmcResultDto resultDto=new MdmcResultDto();
+        List<MdmcResultDto> resultDtoList=new ArrayList<>();
+        MdmcDevice device=new MdmcDevice();
+        device.setTask_id(task_id);
+        List<MdmcDevice> deviceList=deviceMapper.select(device);
+        for (int i=0;i<deviceList.size();i++){
+            resultDto.setCost(deviceList.get(i).getCost());
+            resultDto.setDevice_id(deviceList.get(i).getId());
+            resultDto.setDevice_name(deviceList.get(i).getDevice_name());
+            resultDtoList.add(resultDto);
+        }
+       return resultDtoList;
+    }
+
+    @Override
+    public MdmcTypeDto getTypeList() {
+
+        Random rand = new Random();
+        Long task_id=rand.nextLong();
+        Long review_id=rand.nextLong();
+        Long device_id=rand.nextLong();
+        MdmcTypeDto typeDto=new MdmcTypeDto();
+        typeDto.setReview_id(review_id);
+        typeDto.setTask_id(task_id);
+        typeDto.setDevice_id(device_id);
+        typeDto.setDeviceNameEnums(MdmcTaskItemDeviceNameEnum.values());
+        typeDto.setStatusEnums(MdmcTaskStatusEnum.values());
+        typeDto.setTroubleAddressEnums(MdmcTaskItemTroubleAddressEnum.values());
+        typeDto.setTroubleNameEnums(MdmcTaskItemTroubleNameEnum.values());
+        typeDto.setTroubleTypeEnums(MdmcTaskItemTroubleTypeEnum.values());
+        typeDto.setLevelEnums(MdmcTaskLevelEnum.values());
+
+
+        return typeDto;
+    }
+
+    @Override
+    public MdmcTask getTask(Long task_id) {
+
+        MdmcTask task=taskMapper.selectByPrimaryKey(task_id);
+        return task;
+    }
+
+    @Override
+    public String checkTask(MdmcCheckDto checkDto) {
+        MdmcTask task=taskMapper.selectByPrimaryKey(checkDto.getOrderId());
+        if (!checkDto.getApprovalResult()){
+            taskMapper.deleteByPrimaryKey(checkDto.getOrderId());
+            task.setStatus(1);
+        }
+        task.setStatus(4);
+        return "success";
+    }
+
+    @Override
+    public String acceptTask(MdmcCheckDto checkDto) {
+        MdmcTask task=taskMapper.selectByPrimaryKey(checkDto.getOrderId());
+        if (!checkDto.getAcceptResult()){
+
+            if (checkDto.getAcceptor()==0){
+                Random rand = new Random();
+                Long facilitator_id=rand.nextLong();
+                task.setFacilitatorId(facilitator_id);
+            }
+            else {
+            Random rand = new Random();
+            Long maintainer_id=rand.nextLong();
+            task.setMaintainerId(maintainer_id);
+            task.setStatus(5);}
+        }
+        else if (checkDto.getAcceptor()==0){
+            task.setStatus(5);
+        }
+        else {task.setStatus(6);}
+
+        return "success";
+    }
+
+    @Override
+    public String confirmTask(MdmcCheckDto checkDto) {
+        MdmcTask task=taskMapper.selectByPrimaryKey(checkDto.getOrderId());
+        if (checkDto.getConfirmResult()){
+            task.setStatus(11);
+        }
         return "success";
     }
 

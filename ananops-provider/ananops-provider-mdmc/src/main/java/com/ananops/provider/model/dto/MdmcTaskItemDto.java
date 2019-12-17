@@ -34,6 +34,12 @@ public class MdmcTaskItemDto implements Serializable {
     @ApiModelProperty("设备地址-纬度")
     private BigDecimal deviceLongitude;
 
+    @ApiModelProperty("图片地址")
+    private String photo_url;
+
+    @ApiModelProperty("故障类型")
+    private Integer trouble_type;
+
 //    @ApiModelProperty("图片上传链接")
 //    private String imageUrl;
 //
