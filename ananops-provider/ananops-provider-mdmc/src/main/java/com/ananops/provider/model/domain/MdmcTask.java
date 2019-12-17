@@ -107,4 +107,30 @@ public class MdmcTask extends BaseEntity {
     @Column(name = "clearing_form")
     private Integer clearingForm;
 
+    /**
+     * 报修人电话
+     */
+    @Column(name = "creator_call")
+    private String creator_call;
+
+    /**
+     * 地址名称
+     */
+    @Column(name = "address_name")
+    private String address_name;
+
+    /**
+     * 合同id
+     */
+    @Column(name = "contract_id")
+    private Long contract_id;
+
+    /**
+     * 紧急程度
+     */
+    @Column(name = "level")
+    private Integer level;
+
+    @Column(name = "appoint_time")
+    private Date appoint_time;
 }

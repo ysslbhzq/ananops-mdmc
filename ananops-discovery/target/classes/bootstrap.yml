@@ -5,7 +5,7 @@ spring:
     config:
       server:
         native:
-          search-locations: D:/北京安防协会项目/ananops-config-repo
+          search-locations:E:\北安协\ananops-config-repo
 #        git:
 #        uri: https://github.com/SongOf/ananops-config-repo/ananops-config-repo.git
 #        username:
