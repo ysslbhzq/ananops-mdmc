@@ -49,14 +49,14 @@ public class DMCHanddler  {
 
     @GetMapping(value = "/getPrincipalTaskList")
     @ApiOperation(httpMethod = "GET",value = "甲方获取工单列表")
-    public Wrapper<List<MdmcPrincipleTaskDto>> getPrincipalTaskList(@ApiParam(name = "principal_id",value = "甲方id") @RequestParam Long principal_id){
-        List<MdmcPrincipleTaskDto> principleTaskDtoList;
+    public Wrapper<List<MdmcOrderDto>> getPrincipalTaskList(@ApiParam(name = "principal_id",value = "甲方id") @RequestParam Long principal_id){
+        List<MdmcOrderDto> orderDtoList;
         try {
-            principleTaskDtoList=taskService.getPrincipalTaskList(principal_id);
+            orderDtoList=taskService.getPrincipalTaskList(principal_id);
         }catch (Exception e){
             return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.ok(principleTaskDtoList);
+        return WrapMapper.ok(orderDtoList);
     }
 
     @GetMapping(value = "/getDeviceInfoList")
@@ -86,26 +86,26 @@ public class DMCHanddler  {
     /*获取工单的维修过程信息*/
     @GetMapping(value = "/getProcessInfo")
     @ApiOperation(httpMethod = "GET",value = "获取工单的维修过程信息")
-    public Wrapper<MdmcProcessInfoDto> processInfo(@ApiParam(name = "task_id",value = "工单id") @RequestParam Long task_id){
-        MdmcProcessInfoDto processInfoDto;
+    public Wrapper<MdmcResultDto> processInfo(@ApiParam(name = "task_id",value = "工单id") @RequestParam Long task_id){
+        MdmcResultDto resultDto;
         try {
-            processInfoDto=taskService.getProcessInfo(task_id);
+            resultDto=taskService.getProcessInfo(task_id);
         }catch (Exception e){
             return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.ok(processInfoDto);
+        return WrapMapper.ok(resultDto);
     }
 
     @GetMapping(value = "/getApprovalInfo")
     @ApiOperation(httpMethod = "GET",value = "获取工单的审核信息")
-    public Wrapper<MdmcApproveInfoDto> approvalInfo(@ApiParam(name = "task_id",value = "工单id") @RequestParam Long task_id){
-        MdmcApproveInfoDto approveInfoDto;
+    public Wrapper<MdmcCheckDto> approvalInfo(@ApiParam(name = "task_id",value = "工单id") @RequestParam Long task_id){
+        MdmcCheckDto checkDto;
         try {
-            approveInfoDto=taskService.getApprovalInfo(task_id);
+            checkDto=taskService.getApprovalInfo(task_id);
         }catch (Exception e){
             return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.ok(approveInfoDto);
+        return WrapMapper.ok(checkDto);
     }
 
 
@@ -136,14 +136,14 @@ public class DMCHanddler  {
 
     @GetMapping(value = "/getRepairsList")
     @ApiOperation(httpMethod = "GET",value = "维修工获取维修单列表")
-    public Wrapper<List<MdmcRepairsTaskDto>> getRepairsList(@ApiParam(name = "maintainer_id",value = "维修工id") @RequestParam Long maintainer_id){
-        List<MdmcRepairsTaskDto> repairsTaskDtoList;
+    public Wrapper<List<MdmcOrderDto>> getRepairsList(@ApiParam(name = "maintainer_id",value = "维修工id") @RequestParam Long maintainer_id){
+        List<MdmcOrderDto> orderDtoList;
         try {
-            repairsTaskDtoList=taskService.getRepairsList(maintainer_id);
+            orderDtoList=taskService.getRepairsList(maintainer_id);
         }catch (Exception e){
             return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.ok(repairsTaskDtoList);
+        return WrapMapper.ok(orderDtoList);
     }
 
     @GetMapping(value = "/getFacilityTaskList")
@@ -170,18 +170,18 @@ public class DMCHanddler  {
         return WrapMapper.ok(taskDtoList);
     }
 
-    /*存疑*/
-    @GetMapping(value = "/countTaskByStatus")
-    @ApiOperation(httpMethod = "GET",value = "维修工获取显示不同状态的工单个数列表")
-    public Wrapper<List<MdmcStatusRepairsDto>> getStatusCountList(@ApiParam(name = "maintainer_id",value = "维修工ID") @RequestParam Long maintainer_id){
-        List<MdmcStatusRepairsDto> statusRepairsDtoList;
-        try {
-            statusRepairsDtoList=taskService.getRepairsStatusCountList(maintainer_id);
-        }catch (Exception e){
-            return WrapMapper.error(e.getMessage());
-        }
-        return WrapMapper.ok(statusRepairsDtoList);
-    }
+//    /*存疑*/
+//    @GetMapping(value = "/countTaskByStatus")
+//    @ApiOperation(httpMethod = "GET",value = "维修工获取显示不同状态的工单个数列表")
+//    public Wrapper<List<MdmcStatusRepairsDto>> getStatusCountList(@ApiParam(name = "maintainer_id",value = "维修工ID") @RequestParam Long maintainer_id){
+//        List<MdmcStatusRepairsDto> statusRepairsDtoList;
+//        try {
+//            statusRepairsDtoList=taskService.getRepairsStatusCountList(maintainer_id);
+//        }catch (Exception e){
+//            return WrapMapper.error(e.getMessage());
+//        }
+//        return WrapMapper.ok(statusRepairsDtoList);
+//    }
 
 //    /*测试*/
 //    @GetMapping(value = "/getAllTaskTerm")
