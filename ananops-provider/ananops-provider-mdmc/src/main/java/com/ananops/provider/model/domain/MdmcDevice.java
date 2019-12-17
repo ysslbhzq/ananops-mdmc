@@ -20,6 +20,12 @@ public class MdmcDevice extends BaseEntity {
     @Column(name = "device_model")
     private String deviceModel;
 
+    @Column(name = "task_id")
+    private Long task_id;
+
+    @Column(name = "device_name")
+    private String device_name;
+
     /**
      * 设备类型
      */
@@ -52,9 +58,5 @@ public class MdmcDevice extends BaseEntity {
      */
     @Column(name = "installation_date")
     private Date installationDate;
-
-    public MdmcDevice(String deviceType){
-        this.deviceType = deviceType;
-    }
 
 }
