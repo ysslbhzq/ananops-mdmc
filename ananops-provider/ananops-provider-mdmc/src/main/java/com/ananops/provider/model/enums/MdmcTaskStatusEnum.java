@@ -31,9 +31,9 @@ public enum MdmcTaskStatusEnum {
 
     ShenHeZhong(3, "审核中"),
 
-    JieDan(4, "待服务商接单"),
+    JieDan(4, "待接单"),
 
-    ZhiXing(5, "待维修工接单"),
+    ZhiXing(5, "待执行"),
 
     WeiXiu(6, "维修中"),
 
@@ -74,10 +74,5 @@ public enum MdmcTaskStatusEnum {
         }
         return null;
     }
-
-    public String toString() {
-        return String.valueOf ( this.type );
-    }
-
 
 }

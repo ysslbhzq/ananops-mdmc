@@ -14,9 +14,6 @@ public class MdmcTaskLogDto implements Serializable {
     @ApiModelProperty("工单编号")
     private  Long taskId;
 
-    @ApiModelProperty("任务日志id")
-    private Long taskLogId;
-
     @ApiModelProperty("工单状态")
     private Integer status;
 

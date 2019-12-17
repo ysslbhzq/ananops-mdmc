@@ -75,29 +75,16 @@ public class MdmcTaskItem extends BaseEntity {
     /**
      * 当前维修状态
      */
-
     private Integer status;
 
     /**
      * 维修建议（维修工填写）
      */
-    @Column(name = "suggestion")
     private String suggestion;
 
     /**
      * 维修结果（维修工填写）
      */
-    @Column(name = "result")
     private String result;
-
-    /**
-     * 图片url
-     */
-    @Column(name = "photo_url")
-
-    private String photo_url;
-    @Column(name = "trouble_type")
-    private Integer trouble_type;
-
 
 }
