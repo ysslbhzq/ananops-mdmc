@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -950,8 +947,24 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     }
 
     @Override
-    public void timeLimit(Long id, int delay, List<Long> all) {
-
+    public void timeLimit(final Long id, final int delay,List<Long> all){
+        final Timer timer=new Timer();
+        timer.schedule(new TimerTask(){
+            int count=0;
+            @Override
+            public void run(){
+                count++;
+                MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(id);
+                int status=mdmcTask.getStatus();
+                if(status==1&&count==delay/1000){                         //未接单状态
+                    faciTransfer(id,all);                                             //调用转单方法
+                    timer.cancel();
+                }
+                if(status==2){                                            //已接单
+                    timer.cancel();
+                }
+            }
+        },0,1000);
     }
 
     @Override
