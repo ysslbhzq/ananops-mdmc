@@ -1,6 +1,6 @@
 package com.ananops.provider.model.dto;
 
-import com.ananops.provider.model.enums.MdmcTaskStatusEnum;
+import com.ananops.provider.model.enums.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
