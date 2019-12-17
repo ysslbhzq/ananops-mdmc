@@ -1,10 +1,7 @@
 package com.ananops.provider.web.frontend;
 
 import com.ananops.provider.model.domain.MdmcReview;
-import com.ananops.provider.model.dto.MdmcApproveInfoDto;
-import com.ananops.provider.model.dto.MdmcCheckDto;
-import com.ananops.provider.model.dto.MdmcOrderDto;
-import com.ananops.provider.model.dto.MdmcResultDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.MdmcDeviceService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.provider.utils.WrapMapper;
@@ -13,12 +10,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -132,6 +128,56 @@ public class MdmcTaskHandler {
     public Wrapper<String> acceptTask(@ApiParam(name = "checkDto",value = "接单dto") @RequestBody MdmcCheckDto checkDto){
         try {
             String res=taskService.acceptTask(checkDto);
+            if (!res.equals("success")){
+                return WrapMapper.error(res);
+            }
+        }catch (Exception e){
+            return WrapMapper.error(e.getMessage());
+        }
+
+
+        return WrapMapper.ok("success");
+    }
+    @PostMapping(value = "/emergency")
+    @ApiOperation(httpMethod = "POST",value = "提交紧急维修任务申请")
+    public Wrapper<String> Emergency(@ApiParam(name = "emergencyTask",value = "提交紧急维修任务申请") @RequestBody MdmcOrderDto orderDto,
+                                     @ApiParam(name = "delay",value = "最长待接单时间") @RequestParam int delay){
+        try {
+            List<Long> all=new ArrayList<>();//获取所有服务商
+            String res = taskService.submitTask(orderDto);
+            taskService.timeLimit(orderDto.getUId(),delay,all);
+            if (!res.equals("success")) {
+                return WrapMapper.error(res);
+            }
+        } catch (Exception e){
+            return WrapMapper.error(e.getMessage());
+        }
+        return WrapMapper.ok("success");
+    }
+
+    @PostMapping(value = "/takeOrder")
+    @ApiOperation(httpMethod = "POST",value = "服务商接单")
+    public Wrapper<String> Emergency(@ApiParam(name = "takeOrder",value = "服务商接单") @RequestBody MdmcUpdateTaskDto updateTaskDto){
+        try {
+            String res = taskService.updateTask(updateTaskDto);
+            taskService.deleteFaciMap(updateTaskDto);
+            if (!res.equals("success")) {
+                return WrapMapper.error(res);
+            }
+        } catch (Exception e){
+            return WrapMapper.error(e.getMessage());
+        }
+        return WrapMapper.ok("success");
+    }
+
+    @PostMapping(value = "/faci_reject")
+    @ApiOperation(httpMethod = "POST", value = "服务商拒单")
+    public Wrapper<String> approve(@ApiParam(name = "taskId", value = "工单id") @RequestBody MdmcUpdateTaskDto mdmcUpdateTaskDto) {
+        try {
+            taskService.updateTask(mdmcUpdateTaskDto);
+            List<Long> list=new ArrayList<>();
+            //调用接口获取所有服务商id
+            String res=taskService.faciTransfer(mdmcUpdateTaskDto.getOrderId(),list);
             if (!res.equals("success")){
                 return WrapMapper.error(res);
             }

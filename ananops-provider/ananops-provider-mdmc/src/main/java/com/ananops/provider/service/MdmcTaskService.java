@@ -64,6 +64,10 @@ public interface MdmcTaskService {
     List<MdmcTask> getTaskListByClassify(MdmcQueryDto queryDto);
 
 //    Void addTaskRecord(MdmcOrderDto taskDto);
+String faciTransfer(Long taskId,List<Long> all);
+
+    void timeLimit(final Long id, final int delay,List<Long> all);
+    void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto);
 
     List<MdmcProcessingDto> getProcessingList(Long task_id);
 

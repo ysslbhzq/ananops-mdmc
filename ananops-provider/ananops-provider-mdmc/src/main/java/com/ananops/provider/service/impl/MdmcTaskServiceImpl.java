@@ -40,6 +40,7 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
     private MdmcReviewMapper reviewMapper;
 
     static private Map<Long, MdmcTask> taskMap = new ConcurrentHashMap<>();
+    static private Map<Long,List<Long>> faciMap=new ConcurrentHashMap<>();
 
 //    @Override
 //    public MdmcTask changeTaskStatus(Long taskId, Integer status) {
@@ -124,8 +125,8 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 //        task.setCreator(user.getName());
 //        task.setLastOperatorId(user.getUId());
 //        task.setLastOperator(user.getName());
-
-        task.setId(getTypeList().getTask_id());
+        Long task_id=getTypeList().getTask_id();
+        task.setId(task_id);
         task.setUser_id(orderDto.getUserId());
         task.setTotalCost(orderDto.getTotalCost());
         task.setFacilitatorId(orderDto.getFacilitatorId());
@@ -145,6 +146,9 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
         if (a < 1) {
             return "出错";
         }
+        List<Long> list=new ArrayList<>();
+        list.add(orderDto.getFacilitatorId());
+        faciMap.put(task_id,list);
 
         List<MdmcTaskItemDto> taskItemDtoList = orderDto.getTaskItemDtoList();
 
@@ -918,6 +922,42 @@ public class MdmcTaskServiceImpl implements MdmcTaskService {
 
 
         return taskList;
+    }
+
+    @Override
+    public String faciTransfer(Long taskId, List<Long> all) {
+        int count=0;
+        Long faci=null;
+        List<Long> list=faciMap.get(taskId);                           //获取当前任务id已分配过的服务商
+        for(Long faciId:all){
+            count++;
+            if (!list.contains(faciId)) {                               //判断当前服务商是否已被分配过
+                faci=faciId;
+                list.add(faciId);
+                faciMap.put(taskId,list);
+                break;
+            }
+            if(count==list.size()){
+                return "无服务商接单";                         //无服务商接单
+            }
+        }
+        MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(taskId);
+        mdmcTask.setFacilitatorId(faci);
+        if (taskMapper.updateByPrimaryKey(mdmcTask)==1){
+            return "success";
+        }
+        return  "failed";
+    }
+
+    @Override
+    public void timeLimit(Long id, int delay, List<Long> all) {
+
+    }
+
+    @Override
+    public void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto) {
+        Long taskId=updateTaskDto.getOrderId();
+        faciMap.remove(taskId);
     }
 
     @Override

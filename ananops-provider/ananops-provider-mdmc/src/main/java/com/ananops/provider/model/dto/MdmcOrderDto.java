@@ -21,8 +21,8 @@ import java.util.List;
 public class MdmcOrderDto implements Serializable {
     private static final long serialVersionUID = 7339286966929037187L;
 
-//    @ApiModelProperty("工单ID")
-//    private Long uId;
+    @ApiModelProperty("工单ID")
+    private Long uId;
 
     @ApiModelProperty("维修任务名称")
     private String title;
