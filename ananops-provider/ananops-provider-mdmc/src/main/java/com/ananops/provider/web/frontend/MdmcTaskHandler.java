@@ -28,7 +28,7 @@ public class MdmcTaskHandler {
 
     @PostMapping(value = "/submit/{taskId}")
     @ApiOperation(httpMethod = "POST",value = "提交工单")
-    public Wrapper<String> submit(@ApiParam(name = "orderDto",value = "工单") @RequestBody MdmcOrderDto orderDto){
+    public Wrapper<String> submitTask(@ApiParam(name = "orderDto",value = "工单") @RequestBody MdmcOrderDto orderDto){
         try {
             String res = taskService.submitTask(orderDto);
             if (!res.equals("success")) {
@@ -39,24 +39,38 @@ public class MdmcTaskHandler {
         }
         return WrapMapper.ok("success");
     }
-
-
-    @PostMapping(value = "/submitApproval")
-    @ApiOperation(httpMethod = "POST", value = "提交审核申请")
-    public Wrapper<String> approve(@ApiParam(name = "approve task", value = "审核维修申请") @RequestBody MdmcApproveInfoDto approveInfoDto) {
-
+    @PostMapping(value = "/submitTaskItem")
+    @ApiOperation(httpMethod = "POST",value = "提交子工单（PC端）")
+    public Wrapper<String> submitTaskItem(@ApiParam(name = "taskItemDto",value = "子工单") @RequestBody MdmcTaskItemDto taskItemDto){
         try {
-            String res=taskService.submitApproval(approveInfoDto);
-           if (!res.equals("success")){
-               return WrapMapper.error(res);
-           }
-            }catch (Exception e){
+            String res = taskService.submitTaskItem(taskItemDto);
+            if (!res.equals("success")) {
+                return WrapMapper.error(res);
+            }
+        } catch (Exception e){
             return WrapMapper.error(e.getMessage());
         }
-
-
         return WrapMapper.ok("success");
     }
+
+
+
+//    @PostMapping(value = "/submitApproval")
+//    @ApiOperation(httpMethod = "POST", value = "提交审核申请")
+//    public Wrapper<String> approve(@ApiParam(name = "approve task", value = "审核维修申请") @RequestBody MdmcApproveInfoDto approveInfoDto) {
+//
+//        try {
+//            String res=taskService.submitApproval(approveInfoDto);
+//           if (!res.equals("success")){
+//               return WrapMapper.error(res);
+//           }
+//            }catch (Exception e){
+//            return WrapMapper.error(e.getMessage());
+//        }
+//
+//
+//        return WrapMapper.ok("success");
+//    }
 
     @PostMapping(value = "/submitResult")
     @ApiOperation(httpMethod = "POST",value = "提交备件方案和结果")

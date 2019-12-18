@@ -1,7 +1,6 @@
 package com.ananops.provider.service;
 
 import com.ananops.provider.model.domain.MdmcTaskItem;
-import com.ananops.provider.model.dto.MdmcDeviceTroubleDto;
 import com.ananops.provider.model.dto.MdmcStatusRepairsDto;
 import com.ananops.provider.model.dto.MdmcTroubleInfoDto;
 import com.ananops.provider.model.dto.MdmcWorkLoadDto;
@@ -34,5 +33,5 @@ public interface MdmcTaskItemService {
 
     List<MdmcTaskItem> selectAll() ;
 
-    List<MdmcDeviceTroubleDto> getDeviceTroubleList(Long task_id);
+    List<MdmcTaskItem> getDeviceTroubleList(Long task_id);
 }

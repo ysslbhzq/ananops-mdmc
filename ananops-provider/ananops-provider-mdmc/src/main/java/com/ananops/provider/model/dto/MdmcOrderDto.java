@@ -24,9 +24,6 @@ public class MdmcOrderDto implements Serializable {
     @ApiModelProperty("工单ID")
     private Long uId;
 
-    //    @ApiModelProperty("工单ID")
-//    private Long uId;
-
     @ApiModelProperty("维修任务名称")
     private String title;
 
@@ -80,6 +77,5 @@ public class MdmcOrderDto implements Serializable {
 
     @ApiModelProperty("预约时间")
     private Date appoint_time;
-
 
 }

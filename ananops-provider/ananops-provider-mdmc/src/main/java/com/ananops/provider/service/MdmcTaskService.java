@@ -2,6 +2,7 @@ package com.ananops.provider.service;
 
 import com.ananops.provider.model.domain.MdmcReview;
 import com.ananops.provider.model.domain.MdmcTask;
+import com.ananops.provider.model.domain.MdmcTaskLog;
 import com.ananops.provider.model.dto.*;
 
 import java.util.List;
@@ -18,6 +19,16 @@ public interface MdmcTaskService {
 //    MdmcTask saveTask(MdmcTask task);
 //
     String submitTask(MdmcOrderDto order) throws Exception;
+
+    String submitTaskItem(MdmcTaskItemDto taskItemDto);
+
+    void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto);
+
+    List<MdmcProcessingDto> getProcessingList(Long task_id);
+
+    String faciTransfer(Long taskId, List<Long> all);
+
+    void timeLimit(final Long id, final int delay,List<Long> all);
 //
 //    String leaderApprovePass(MdmcApproveInfoDto approveInfo) throws Exception;
 //
@@ -56,22 +67,16 @@ public interface MdmcTaskService {
 //    void evaluate(String data);
 //
 //    Long dispatchTask(Long taskId);
-    String submitResult(MdmcResultDto resultDto);
 
-    String submitReview(MdmcReview review);
-    List<MdmcStatusRepairsDto> getRepairsStatusCountList(Long maintainer_id);
-    List<MdmcResultDto> getResult(Long task_id);
+//    List<MdmcStatusRepairsDto> getRepairsStatusCount();
+
     List<MdmcOrderDto> getTaskList(Long user_id);
 
-    MdmcTypeDto getTypeList();
+    List<MdmcTask> getTaskListByClassify(MdmcQueryDto queryDto);
 
-    MdmcTask getTask(Long task_id);
 //    Void addTaskRecord(MdmcOrderDto taskDto);
-    String faciTransfer(Long taskId,List<Long> all);
 
-    void timeLimit(final Long id, final int delay,List<Long> all);
-
-    List<MdmcProcessingDto> getProcessingList(Long task_id);
+    List<MdmcTaskLog> getTaskLogList(Long task_id);
 
     MdmcResultDto getProcessInfo(Long task_id);
 
@@ -81,11 +86,13 @@ public interface MdmcTaskService {
 
     List<MdmcOrderDto> getPrincipalTaskList(Long principal_id);
 
-    List<MdmcTask> getTaskListByClassify(MdmcQueryDto queryDto);
-
     MdmcCheckDto getApprovalInfo(Long task_id);
 
     MdmcWorkLoadDto getWorkLoad(Long task_id);
+
+    List<MdmcTask>  getListDto(MdmcQueryDto queryDto);
+
+    List<MdmcTask> getPageList(MdmcPageDto pageDto);
 
     List<MdmcOrderDto> getTaskListByStatus(Integer status);
 
@@ -93,14 +100,21 @@ public interface MdmcTaskService {
 
     String updateTask(MdmcUpdateTaskDto updateTaskDto);
 
+    String submitApproval(MdmcApproveInfoDto approveInfoDto);
+
+    String submitResult(MdmcResultDto resultDto);
+
+    String submitReview(MdmcReview review);
+
+    List<MdmcResultDto> getResult(Long task_id);
+
+    MdmcTypeDto getTypeList();
+
+    MdmcTask getTask(Long task_id);
+
     String checkTask(MdmcCheckDto checkDto);
 
     String acceptTask(MdmcCheckDto checkDto);
 
     String confirmTask(MdmcCheckDto checkDto);
-
-    //从对应关系中删除该工单
-    void deleteFaciMap(MdmcUpdateTaskDto updateTaskDto);
-
-    String submitApproval(MdmcApproveInfoDto approveInfoDto);
 }

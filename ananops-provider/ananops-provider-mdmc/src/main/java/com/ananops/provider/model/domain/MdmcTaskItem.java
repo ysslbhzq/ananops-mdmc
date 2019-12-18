@@ -99,4 +99,5 @@ public class MdmcTaskItem extends BaseEntity {
     @Column(name = "trouble_type")
     private Integer trouble_type;
 
+
 }

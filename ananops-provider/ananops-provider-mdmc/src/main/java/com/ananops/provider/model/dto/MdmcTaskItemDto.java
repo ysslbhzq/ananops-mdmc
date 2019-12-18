@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 @ApiModel
 public class MdmcTaskItemDto implements Serializable {
     private static final long serialVersionUID = -3208778407302267489L;
+    @ApiModelProperty("工单id")
+    private Long taskId;
 
     @ApiModelProperty("设备编号")
     private Long deviceId;

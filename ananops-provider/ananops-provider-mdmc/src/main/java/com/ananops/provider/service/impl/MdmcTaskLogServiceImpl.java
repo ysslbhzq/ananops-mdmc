@@ -26,9 +26,8 @@ public class MdmcTaskLogServiceImpl implements MdmcTaskLogService {
     @Override
     public String submitTaskLog(MdmcTaskLogDto taskLogDto) {
         MdmcTaskLog taskLog = new MdmcTaskLog();
-        Random rand = new Random();
-        Long task_log_id=rand.nextLong();
-        taskLog.setId(task_log_id);
+
+        taskLog.setId(taskLogDto.getTaskLogId());
         taskLog.setTaskId(taskLogDto.getTaskId());
 
         taskLog.setStatus(taskLogDto.getStatus());

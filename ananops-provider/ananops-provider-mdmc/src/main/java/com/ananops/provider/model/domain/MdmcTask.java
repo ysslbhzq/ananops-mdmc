@@ -133,4 +133,5 @@ public class MdmcTask extends BaseEntity {
 
     @Column(name = "appoint_time")
     private Date appoint_time;
+
 }

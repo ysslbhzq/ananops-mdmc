@@ -6,7 +6,7 @@ spring:
     name: ananops-provider-uac
   datasource:
     username: root
-    password: 123456
+    password: root123456
   redis:
     database: 0
     host: ananops-db-redis

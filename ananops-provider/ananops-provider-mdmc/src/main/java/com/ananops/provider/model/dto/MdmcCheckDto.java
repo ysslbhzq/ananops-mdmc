@@ -15,6 +15,9 @@ public class MdmcCheckDto implements Serializable {
     @ApiModelProperty("审核结果")
     private Boolean approvalResult;
 
+    @ApiModelProperty("描述")
+    private String description;
+
     @ApiModelProperty("接单角色")
     private Integer acceptor;//0:服务商；1：维修工
 

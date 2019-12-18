@@ -7,4 +7,4 @@ spring:
     name: ananops-provider-mdmc
   datasource:
                 username: root
-                password: 123456
+                password: root123456
